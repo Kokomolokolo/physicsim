@@ -1,30 +1,40 @@
 // Ein einfacher Physik Simulator mit Rust im wasm und auch mit Rocket Backend
 // TODO: Alles schreib ich jetzt nicht alles hin
 
-// import init, { update, get_positons} from "/static/physiksim.js"
+import init, { get_positions } from "./wasm_code.js"
 
-
+async function start () {
+    await init();
+    requestAnimationFrame(sim_loop)
+}
 
 function sim_loop () {
-    update(); //ruft die rust funktionen auf, um updates über die physik zu bekommen
+    // update(); //ruft die rust funktionen auf, um updates über die physik zu bekommen
 
-    const positions = get_positons(); // ruft die positonen auf die alle Kugeln haben, gibt nur daten zurück
-                                      // Soll in Zukuft ein Array ausgeben so dass mit mehr Kugeln gearbeitet werden kann  
-
-    draw(); // Malt neue Positionen
+    const positions = get_positions(); // ruft die positonen auf die alle Kugeln haben, gibt nur daten zurück
+                                      // get_positon() gibt ein array [x, y]
+    draw(positions); // Malt neue Positionen
 
     requestAnimationFrame(sim_loop)
 }
 
-let ball
 
 // Context für den Canvas
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
+// Env Variabeln
 canvas.width = 1000;
 canvas.height= 750;
-// Malt
-function draw() {
+let RADIUS = 10;
 
+// Malt
+function draw(positions) {
+    // Restest des Canvases
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // malt einen Kreis nach den Positionen, die letzen 2 args sind wierd idk 
+    ctx.arc(positions[0], positions[1], RADIUS, 0, 2 * Math.PI);
+    ctx.fillStyle = "red";
+    ctx.fill();
 }
-draw();
+
+start();
