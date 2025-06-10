@@ -1,30 +1,173 @@
 let wasm;
 
-export function update() {
-    wasm.update();
-}
+const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
 
-let cachedInt32ArrayMemory0 = null;
+if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
 
-function getInt32ArrayMemory0() {
-    if (cachedInt32ArrayMemory0 === null || cachedInt32ArrayMemory0.byteLength === 0) {
-        cachedInt32ArrayMemory0 = new Int32Array(wasm.memory.buffer);
+let cachedUint8ArrayMemory0 = null;
+
+function getUint8ArrayMemory0() {
+    if (cachedUint8ArrayMemory0 === null || cachedUint8ArrayMemory0.byteLength === 0) {
+        cachedUint8ArrayMemory0 = new Uint8Array(wasm.memory.buffer);
     }
-    return cachedInt32ArrayMemory0;
+    return cachedUint8ArrayMemory0;
 }
 
-function getArrayI32FromWasm0(ptr, len) {
+function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
-    return getInt32ArrayMemory0().subarray(ptr / 4, ptr / 4 + len);
+    return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
-/**
- * @returns {Int32Array}
- */
-export function get_positions() {
-    const ret = wasm.get_positions();
-    var v1 = getArrayI32FromWasm0(ret[0], ret[1]).slice();
-    wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
-    return v1;
+
+const BallFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_ball_free(ptr >>> 0, 1));
+
+export class Ball {
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        BallFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_ball_free(ptr, 0);
+    }
+    /**
+     * @returns {number}
+     */
+    get id() {
+        const ret = wasm.__wbg_get_ball_id(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set id(arg0) {
+        wasm.__wbg_set_ball_id(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get dx() {
+        const ret = wasm.__wbg_get_ball_dx(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set dx(arg0) {
+        wasm.__wbg_set_ball_dx(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get dy() {
+        const ret = wasm.__wbg_get_ball_dy(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set dy(arg0) {
+        wasm.__wbg_set_ball_dy(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get x() {
+        const ret = wasm.__wbg_get_ball_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set x(arg0) {
+        wasm.__wbg_set_ball_x(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get y() {
+        const ret = wasm.__wbg_get_ball_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set y(arg0) {
+        wasm.__wbg_set_ball_y(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get radius() {
+        const ret = wasm.__wbg_get_ball_radius(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set radius(arg0) {
+        wasm.__wbg_set_ball_radius(this.__wbg_ptr, arg0);
+    }
+}
+
+const BallManagerFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_ballmanager_free(ptr >>> 0, 1));
+
+export class BallManager {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(BallManager.prototype);
+        obj.__wbg_ptr = ptr;
+        BallManagerFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        BallManagerFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_ballmanager_free(ptr, 0);
+    }
+    /**
+     * @param {number} canvas_width
+     * @param {number} canvas_height
+     * @returns {BallManager}
+     */
+    static new(canvas_width, canvas_height) {
+        const ret = wasm.ballmanager_new(canvas_width, canvas_height);
+        return BallManager.__wrap(ret);
+    }
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} dx
+     * @param {number} dy
+     * @param {number} radius
+     * @returns {number}
+     */
+    add_ball(x, y, dx, dy, radius) {
+        const ret = wasm.ballmanager_add_ball(this.__wbg_ptr, x, y, dx, dy, radius);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {Float32Array}
+     */
+    update_and_get_positions() {
+        const ret = wasm.ballmanager_update_and_get_positions(this.__wbg_ptr);
+        return ret;
+    }
 }
 
 async function __wbg_load(module, imports) {
@@ -61,6 +204,18 @@ async function __wbg_load(module, imports) {
 function __wbg_get_imports() {
     const imports = {};
     imports.wbg = {};
+    imports.wbg.__wbg_buffer_609cc3eee51ed158 = function(arg0) {
+        const ret = arg0.buffer;
+        return ret;
+    };
+    imports.wbg.__wbg_new_780abee5c1739fd7 = function(arg0) {
+        const ret = new Float32Array(arg0);
+        return ret;
+    };
+    imports.wbg.__wbg_newwithbyteoffsetandlength_e6b7e69acd4c7354 = function(arg0, arg1, arg2) {
+        const ret = new Float32Array(arg0, arg1 >>> 0, arg2 >>> 0);
+        return ret;
+    };
     imports.wbg.__wbindgen_init_externref_table = function() {
         const table = wasm.__wbindgen_export_0;
         const offset = table.grow(4);
@@ -70,6 +225,13 @@ function __wbg_get_imports() {
         table.set(offset + 2, true);
         table.set(offset + 3, false);
         ;
+    };
+    imports.wbg.__wbindgen_memory = function() {
+        const ret = wasm.memory;
+        return ret;
+    };
+    imports.wbg.__wbindgen_throw = function(arg0, arg1) {
+        throw new Error(getStringFromWasm0(arg0, arg1));
     };
 
     return imports;
@@ -82,7 +244,7 @@ function __wbg_init_memory(imports, memory) {
 function __wbg_finalize_init(instance, module) {
     wasm = instance.exports;
     __wbg_init.__wbindgen_wasm_module = module;
-    cachedInt32ArrayMemory0 = null;
+    cachedUint8ArrayMemory0 = null;
 
 
     wasm.__wbindgen_start();
