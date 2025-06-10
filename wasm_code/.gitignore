@@ -1,0 +1,17 @@
+# Ignoriere den Build-Ordner
+/target/
+
+# Ignoriere temporäre Dateien und Backups
+**/*.rs.bk
+**/*~
+
+# Ignoriere Cargo.lock nur bei Bibliotheken (nicht bei binären Projekten!)
+/Cargo.lock
+
+# Ignoriere IDE-Einstellungen (z. B. VS Code oder JetBrains)
+/.vscode/
+/.idea/
+
+# Ignoriere systemabhängige Dateien
+.DS_Store
+Thumbs.db
