@@ -1,7 +1,8 @@
 // Ein einfacher Physik Simulator mit Rust im wasm und auch mit Rocket Backend
 // TODO: Alles schreib ich jetzt nicht alles hin
 
-import init, { get_positions } from "./wasm_code.js"
+
+import init, { BallManager } from "./wasm_code.js"
 
 async function start () {
     await init();
@@ -9,13 +10,7 @@ async function start () {
 }
 
 function sim_loop () {
-    // update(); //ruft die rust funktionen auf, um updates über die physik zu bekommen
 
-    const positions = get_positions(); // ruft die positonen auf die alle Kugeln haben, gibt nur daten zurück
-                                      // get_positon() gibt ein array [x, y]
-    draw(positions); // Malt neue Positionen
-
-    requestAnimationFrame(sim_loop)
 }
 
 
