@@ -19,7 +19,7 @@ function sim_loop () {
     if (positions) {
         console.log(` ${positions}`)
     } 
-    // document.getElementById("numballs").innerHTML = positions.length / 4
+    document.getElementById("numballs").innerHTML = positions.length / 7;
     // addABall();
     requestAnimationFrame(sim_loop);
 }
