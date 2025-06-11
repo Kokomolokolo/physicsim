@@ -69,8 +69,12 @@ impl BallManager {
         let mut data = Vec::with_capacity(self.balls.len() * 4);  //Vec mit platz für id, x, y, radius für jeden ball
 
         for ball in &mut self.balls {
-             // Kollisionslogik
-             // Kolision mit oben und unten
+            // Bewegung
+            ball.x = ball.x + ball.dx;
+            ball.y = ball.y + ball.dy;
+           
+            // *** Kollisionslogik ***
+            // Kolision mit oben und unten
             if ball.y + ball.radius >= self.canvas_height || ball.y - ball.radius <= 0.0 {
                 ball.dy *= -1.0;
             }
@@ -78,12 +82,68 @@ impl BallManager {
             if ball.x + ball.radius >= self.canvas_width || ball.x -ball.radius <= 0.0 {
                 ball.dx *= -1.0;
             }
+            // Korigierte Positonen bei Feststecken
+            if ball.x + ball.radius >= self.canvas_width {
+                ball.x = self.canvas_width - ball.radius; // Position korrigieren
+                ball.dx *= -1.0;
+            } else if ball.x - ball.radius <= 0.0 {
+                ball.x = ball.radius; // Position korrigieren
+                ball.dx *= -1.0;
+            }
+            // Kolison der Bälle untereinader
+            // Nested For loops, keine dopelten checks
+            // i ist immer kleiner als j, j iterriert über alle größeren als i, da die kleineren bereits
+            // mit allem verglichen wurden
+        }
+        for i in 0..self.balls.len(){
+            for j in (i + 1)..self.balls.len() {
+                let (ball1, ball2) = {
+                    let (left_part, right_part) = self.balls.split_at_mut(j);
+                    // Das teilt das Array an einem index in 2 Hälften. Das ist wohl wegen des Borror checkers wichtig.
+                    (&mut left_part[i], &mut right_part[0])
+                    // Gibt die mut Referencen zu einem Ball im linken Part und dem ersten im Rechten zurück
+                };
+                // Distanz zwischen beiden Bällen Berechnen
+                let dx = ball2.x - ball1.x;
+                let dy = ball2.y - ball1.y;
 
-            // Bewegung
-            ball.x = ball.x + ball.dx;
-            ball.y = ball.y + ball.dy;
-           
+                // Via Satz des Pythagoras yay. dx und dy sind die Katheten. Die Wurzel ihrer Summe ist der Abstand
+                // der beiden Kugeln. Da eine sqr Rechnung aber teuer ist, Arbeite ich mit distance_squared 
+                let distance_squared = dx * dx + dy * dy;
+                let min_distance = ball1.radius + ball2.radius;
+                let min_distance_squared = min_distance * min_distance;
+                
+                if distance_squared < min_distance_squared {
+                    // *** Kolison *** 
+                    ball1.dx *= -1.0;
+                    ball1.dy *= -1.0;
+                    ball2.dx *= -1.0;
+                    ball2.dy *= -1.0;
+                }
+                // Sonderfälle um Überlappungen zu vermeiden
+                if distance_squared == 0.0 { // Sonderfall,vermeidet bei uns eigentlich nur Division durch 0
+                    ball1.x -= 0.1;
+                    ball2.x += 0.1;
+                } else {
+                    let current_distance = distance_squared.sqrt();
+                    let overlap = min_distance - current_distance;
 
+                    if overlap > 0.0 {
+                        // Normalisierung der Vektoren, ist logisch wenn ma drüber nachdenkt
+                        let nx = dx / current_distance;
+                        let ny = dy / current_distance;
+
+                        // Bewegung je der hälfe des Overlaps gegeneiander
+                        ball1.x -= overlap * 0.5 * nx;
+                        ball1.y -= overlap * 0.5 * ny;
+                        ball2.x += overlap * 0.5 * nx;
+                        ball2.y += overlap * 0.5 * ny;
+                    }
+                }
+    
+            }
+        }
+        for ball in &self.balls {
             //Füllen des Arrays
             data.push(ball.id as f32); // Umwandlung, da es ein f32 Array ist
             data.push(ball.x);

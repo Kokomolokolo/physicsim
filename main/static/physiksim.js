@@ -3,24 +3,21 @@
 
 import init, { BallManager } from "./wasm_code.js"
 
-let ballmanager = undefined; // Ballmanager global in js, ist nicht so schön aber idk
+let ballmanager = undefined; // Ballmanager global in js, ist nicht so schön aber idc
 
 async function start () {
     await init();
     ballmanager = BallManager.new(canvas.width, canvas.height)
-    //Die vielleicht in eigene funktion
-    console.log(ballmanager.add_ball(100, 100, 0, 5, 10));
-    console.log(ballmanager.add_ball(200, 100, 2, 5, 10));
-
     requestAnimationFrame(sim_loop)
 }
 
 function sim_loop () {
     // positions ist ein array: id, x, y, radius
     let positions = ballmanager.update_and_get_positions();
+    console.log(positions[1])
     draw(positions);
-    document.getElementById("numballs").innerHTML = positions.length / 4
-    addABall();
+    // document.getElementById("numballs").innerHTML = positions.length / 4
+    // addABall();
     requestAnimationFrame(sim_loop);
 }
 
@@ -48,16 +45,9 @@ function draw(positions) {
 }
 
 window.add_ballyay = () => {
-    ballmanager.add_ball(200, 100, 10, 3, 10)
-}
+    ballmanager.add_ball(500, 100, -10, 0.3, 10);
+    ballmanager.add_ball(10, 100, 10, 0, 10)}
 
-function addABall() {
-    let rand1 = Math.floor(Math.random() * 10) + 1
-    let rand2 = Math.floor(Math.random() * 10) + 1
-    ballmanager.add_ball(200, 100, rand1, rand2, 10), 100
-
-}
 
 start();
 
-setInterval(ballmanager.add_ball(200, 100, 10, 3, 10), 100)
