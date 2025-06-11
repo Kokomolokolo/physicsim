@@ -45,8 +45,13 @@ function draw(positions) {
 }
 
 window.add_ballyay = () => {
-    ballmanager.add_ball(500, 100, -10, 0.3, 10);
-    ballmanager.add_ball(10, 100, 10, 0, 10)}
+    ballmanager.add_ball(500, 100, -10, 3, 10);
+    ballmanager.add_ball(300, 400, 7, 4, 10);
+    ballmanager.add_ball(10, 500, 3, 10, 10);
+    ballmanager.add_ball(300, 400, -8, -2, 10);
+    ballmanager.add_ball(300, 400, 2, -5, 10);
+    ballmanager.add_ball(300, 400, -1, 15, 10);
+}
 
 
 start();

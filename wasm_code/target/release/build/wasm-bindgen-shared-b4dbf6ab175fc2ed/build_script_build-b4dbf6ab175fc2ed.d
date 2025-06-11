@@ -1,5 +1,0 @@
-C:\Users\Anwender\projects\rust\physicsim\wasm_code\target\release\build\wasm-bindgen-shared-b4dbf6ab175fc2ed\build_script_build-b4dbf6ab175fc2ed.exe: C:\Users\Anwender\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasm-bindgen-shared-0.2.100\build.rs
-
-C:\Users\Anwender\projects\rust\physicsim\wasm_code\target\release\build\wasm-bindgen-shared-b4dbf6ab175fc2ed\build_script_build-b4dbf6ab175fc2ed.d: C:\Users\Anwender\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasm-bindgen-shared-0.2.100\build.rs
-
-C:\Users\Anwender\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\wasm-bindgen-shared-0.2.100\build.rs:

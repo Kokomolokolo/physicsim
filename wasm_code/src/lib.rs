@@ -90,12 +90,13 @@ impl BallManager {
                 ball.x = ball.radius; // Position korrigieren
                 ball.dx *= -1.0;
             }
-            // Kolison der Bälle untereinader
-            // Nested For loops, keine dopelten checks
-            // i ist immer kleiner als j, j iterriert über alle größeren als i, da die kleineren bereits
-            // mit allem verglichen wurden
         }
-        for i in 0..self.balls.len(){
+
+        // Kolison der Bälle untereinader
+        // Nested For loops, keine dopelten checks
+        // i ist immer kleiner als j, j iterriert über alle größeren als i, da die kleineren bereits
+        // mit allem verglichen wurden
+        for i in 0..self.balls.len(){ // range von null bis ball.len()
             for j in (i + 1)..self.balls.len() {
                 let (ball1, ball2) = {
                     let (left_part, right_part) = self.balls.split_at_mut(j);
@@ -103,7 +104,21 @@ impl BallManager {
                     (&mut left_part[i], &mut right_part[0])
                     // Gibt die mut Referencen zu einem Ball im linken Part und dem ersten im Rechten zurück
                 };
-                // Distanz zwischen beiden Bällen Berechnen
+                handle_colisons_between_balls_v1(ball1, ball2);
+            }
+        }
+        for ball in &self.balls {
+            //Füllen des Arrays
+            data.push(ball.id as f32); // Umwandlung, da es ein f32 Array ist
+            data.push(ball.x);
+            data.push(ball.y);
+            data.push(ball.radius);
+        }
+        Float32Array::from(&data[..]) // IDK WTF aber Vec<f32> wird zu Float32Array
+    }
+
+    fn handle_colisons_between_balls_v1(ball1: &mut Ball, ball2: &mut Ball) {
+        // Distanz zwischen beiden Bällen Berechnen
                 let dx = ball2.x - ball1.x;
                 let dy = ball2.y - ball1.y;
 
@@ -140,17 +155,5 @@ impl BallManager {
                         ball2.y += overlap * 0.5 * ny;
                     }
                 }
-    
-            }
-        }
-        for ball in &self.balls {
-            //Füllen des Arrays
-            data.push(ball.id as f32); // Umwandlung, da es ein f32 Array ist
-            data.push(ball.x);
-            data.push(ball.y);
-            data.push(ball.radius);
-        }
-        Float32Array::from(&data[..]) // IDK WTF aber Vec<f32> wird zu Float32Array
     }
 }
-
