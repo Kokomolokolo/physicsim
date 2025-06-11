@@ -1,15 +1,18 @@
 // Ein einfacher Physik Simulator mit Rust im wasm und auch mit Rocket Backend
 // TODO: Bessere Kolisonslogik
+//          -> Gravitation via einem Toggle
+//          -> Masse und Velocity im Ball integrieren
+//          -> Bessere Kolisonslogik: https://www.youtube.com/watch?v=OeCgAj35n7o als vorbild
 //       RGB Farben auf den Bällen
 
 import init, { BallManager } from "./wasm_code.js"
 
-let ballmanager = undefined; // Ballmanager global in js, ist nicht so schön aber idc
+let ballmanager = undefined; // Ballmanager global, ist nicht so schön aber idc
 
 async function start () {
     await init();
-    ballmanager = BallManager.new(canvas.width, canvas.height)
-    requestAnimationFrame(sim_loop)
+    ballmanager = BallManager.new(canvas.width, canvas.height);
+    requestAnimationFrame(sim_loop);
 }
 
 function sim_loop () {
@@ -50,7 +53,7 @@ function draw(positions) {
 
 window.add_ballyay = () => {
     // add_ball: x, y, dx, dy, radius, r, g, b
-    _add_random_balls(5);
+    _add_random_balls(50);
     // ballmanager.add_ball(300, 400, 7, 4, 10);
     // ballmanager.add_ball(10, 500, 3, 10, 10);
     // ballmanager.add_ball(300, 400, -8, -2, 10);
@@ -58,16 +61,18 @@ window.add_ballyay = () => {
     // ballmanager.add_ball(300, 400, -1, 15, 10);
 }
 
-function _add_random_balls (num) {
+function _add_random_balls (num) { //x: f32, y: f32, dx: f32, dy: f32, radius: f32, mass: f32, r: f32, g: f32, b: f32
     for (let i = 0; i < num; i++) {
         const x = generate_intager_based_range(10, canvas.width - 10);
         const y = generate_intager_based_range(10, canvas.height - 10);
         const dx = generate_intager_based_range(-10, 10);
         const dy = generate_intager_based_range(-10, 10);
+        const mass = 10;
+        const radius = 10;
         const r = Math.floor(Math.random() * 256);
         const g = Math.floor(Math.random() * 256);
         const b = Math.floor(Math.random() * 256);
-        ballmanager.add_ball(x, y, dx, dy, 10, r, g, b);
+        ballmanager.add_ball(x, y, dx, dy, radius, mass, r, g, b);
     }
 }
 function generate_intager_based_range(min, max) {

@@ -57,32 +57,6 @@ export class Ball {
     /**
      * @returns {number}
      */
-    get dx() {
-        const ret = wasm.__wbg_get_ball_dx(this.__wbg_ptr);
-        return ret;
-    }
-    /**
-     * @param {number} arg0
-     */
-    set dx(arg0) {
-        wasm.__wbg_set_ball_dx(this.__wbg_ptr, arg0);
-    }
-    /**
-     * @returns {number}
-     */
-    get dy() {
-        const ret = wasm.__wbg_get_ball_dy(this.__wbg_ptr);
-        return ret;
-    }
-    /**
-     * @param {number} arg0
-     */
-    set dy(arg0) {
-        wasm.__wbg_set_ball_dy(this.__wbg_ptr, arg0);
-    }
-    /**
-     * @returns {number}
-     */
     get x() {
         const ret = wasm.__wbg_get_ball_x(this.__wbg_ptr);
         return ret;
@@ -109,6 +83,32 @@ export class Ball {
     /**
      * @returns {number}
      */
+    get dx() {
+        const ret = wasm.__wbg_get_ball_dx(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set dx(arg0) {
+        wasm.__wbg_set_ball_dx(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get dy() {
+        const ret = wasm.__wbg_get_ball_dy(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set dy(arg0) {
+        wasm.__wbg_set_ball_dy(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
     get radius() {
         const ret = wasm.__wbg_get_ball_radius(this.__wbg_ptr);
         return ret;
@@ -118,6 +118,19 @@ export class Ball {
      */
     set radius(arg0) {
         wasm.__wbg_set_ball_radius(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get mass() {
+        const ret = wasm.__wbg_get_ball_mass(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set mass(arg0) {
+        wasm.__wbg_set_ball_mass(this.__wbg_ptr, arg0);
     }
     /**
      * @returns {number}
@@ -200,13 +213,14 @@ export class BallManager {
      * @param {number} dx
      * @param {number} dy
      * @param {number} radius
+     * @param {number} mass
      * @param {number} r
      * @param {number} g
      * @param {number} b
      * @returns {number}
      */
-    add_ball(x, y, dx, dy, radius, r, g, b) {
-        const ret = wasm.ballmanager_add_ball(this.__wbg_ptr, x, y, dx, dy, radius, r, g, b);
+    add_ball(x, y, dx, dy, radius, mass, r, g, b) {
+        const ret = wasm.ballmanager_add_ball(this.__wbg_ptr, x, y, dx, dy, radius, mass, r, g, b);
         return ret >>> 0;
     }
     /**
