@@ -18,6 +18,12 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 
+function _assertClass(instance, klass) {
+    if (!(instance instanceof klass)) {
+        throw new Error(`expected instance of ${klass.name}`);
+    }
+}
+
 const BallFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_ball_free(ptr >>> 0, 1));
@@ -113,6 +119,45 @@ export class Ball {
     set radius(arg0) {
         wasm.__wbg_set_ball_radius(this.__wbg_ptr, arg0);
     }
+    /**
+     * @returns {number}
+     */
+    get r() {
+        const ret = wasm.__wbg_get_ball_r(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set r(arg0) {
+        wasm.__wbg_set_ball_r(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get g() {
+        const ret = wasm.__wbg_get_ball_g(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set g(arg0) {
+        wasm.__wbg_set_ball_g(this.__wbg_ptr, arg0);
+    }
+    /**
+     * @returns {number}
+     */
+    get b() {
+        const ret = wasm.__wbg_get_ball_b(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} arg0
+     */
+    set b(arg0) {
+        wasm.__wbg_set_ball_b(this.__wbg_ptr, arg0);
+    }
 }
 
 const BallManagerFinalization = (typeof FinalizationRegistry === 'undefined')
@@ -155,10 +200,13 @@ export class BallManager {
      * @param {number} dx
      * @param {number} dy
      * @param {number} radius
+     * @param {number} r
+     * @param {number} g
+     * @param {number} b
      * @returns {number}
      */
-    add_ball(x, y, dx, dy, radius) {
-        const ret = wasm.ballmanager_add_ball(this.__wbg_ptr, x, y, dx, dy, radius);
+    add_ball(x, y, dx, dy, radius, r, g, b) {
+        const ret = wasm.ballmanager_add_ball(this.__wbg_ptr, x, y, dx, dy, radius, r, g, b);
         return ret >>> 0;
     }
     /**
@@ -167,6 +215,15 @@ export class BallManager {
     update_and_get_positions() {
         const ret = wasm.ballmanager_update_and_get_positions(this.__wbg_ptr);
         return ret;
+    }
+    /**
+     * @param {Ball} ball1
+     * @param {Ball} ball2
+     */
+    static handle_colisons_between_balls_v1(ball1, ball2) {
+        _assertClass(ball1, Ball);
+        _assertClass(ball2, Ball);
+        wasm.ballmanager_handle_colisons_between_balls_v1(ball1.__wbg_ptr, ball2.__wbg_ptr);
     }
 }
 

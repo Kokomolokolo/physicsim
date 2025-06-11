@@ -25,6 +25,9 @@ pub struct Ball {
     pub x: f32,
     pub y: f32,
     pub radius: f32, // Sind alle in f32 da f32 + i32 = AAAAAHHH
+    pub r: f32, //RGB
+    pub g: f32,
+    pub b: f32,
 } 
 #[wasm_bindgen]
 pub struct BallManager {
@@ -49,7 +52,7 @@ impl BallManager {
     }
 
     // Methode fügt Bälle hinzu, wow
-    pub fn add_ball(&mut self, x: f32, y: f32, dx: f32, dy: f32, radius: f32) -> u32 {
+    pub fn add_ball(&mut self, x: f32, y: f32, dx: f32, dy: f32, radius: f32, r: f32, g: f32, b: f32) -> u32 {
         let id = self.next_id;
         self.next_id += 1; // Aktualisiert die nächte verfügbare ID in Ballmanager
         self.balls.push( Ball {
@@ -59,15 +62,21 @@ impl BallManager {
             dy,
             radius,
             id,
+            r,
+            g,
+            b,
         });
+        if self.balls.len() == 0 {
+            panic!("Bälle konnten nicht hinzu gefügt werden")
+        } 
         id
     }
     // Berechnet alle bewegungen und schreibt sie in Ballmanager.balls,
     // gibt einen Vector aus. Muss ein Float32Array sein, da wasm_bindgen
     // keine komplexen Datatypen wie ein vec verweden kann. So geht das hoffentlich (foreshadowing?)
     pub fn update_and_get_positions(&mut self) -> Float32Array {
-        let mut data = Vec::with_capacity(self.balls.len() * 4);  //Vec mit platz für id, x, y, radius für jeden ball
-
+        let mut data = Vec::with_capacity(self.balls.len() * 7);  // Vec mit platz für id, x, y, radius, r, g, b
+                                                                  // für jeden ball
         for ball in &mut self.balls {
             // Bewegung
             ball.x = ball.x + ball.dx;
@@ -85,10 +94,10 @@ impl BallManager {
             // Korigierte Positonen bei Feststecken
             if ball.x + ball.radius >= self.canvas_width {
                 ball.x = self.canvas_width - ball.radius; // Position korrigieren
-                ball.dx *= -1.0;
+                // ball.dx *= -1.0;
             } else if ball.x - ball.radius <= 0.0 {
                 ball.x = ball.radius; // Position korrigieren
-                ball.dx *= -1.0;
+                // ball.dx *= -1.0;
             }
         }
 
@@ -104,7 +113,7 @@ impl BallManager {
                     (&mut left_part[i], &mut right_part[0])
                     // Gibt die mut Referencen zu einem Ball im linken Part und dem ersten im Rechten zurück
                 };
-                handle_colisons_between_balls_v1(ball1, ball2);
+                Self::handle_colisons_between_balls_v1(ball1, ball2); // Wow
             }
         }
         for ball in &self.balls {
@@ -113,11 +122,16 @@ impl BallManager {
             data.push(ball.x);
             data.push(ball.y);
             data.push(ball.radius);
+            data.push(ball.r);
+            data.push(ball.g);
+            data.push(ball.b);
         }
         Float32Array::from(&data[..]) // IDK WTF aber Vec<f32> wird zu Float32Array
     }
 
-    fn handle_colisons_between_balls_v1(ball1: &mut Ball, ball2: &mut Ball) {
+
+
+    pub fn handle_colisons_between_balls_v1(ball1: &mut Ball, ball2: &mut Ball) {
         // Distanz zwischen beiden Bällen Berechnen
                 let dx = ball2.x - ball1.x;
                 let dy = ball2.y - ball1.y;
