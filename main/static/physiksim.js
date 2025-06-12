@@ -19,9 +19,6 @@ function sim_loop () {
     // positions ist ein array: id, x, y, radius
     let positions = ballmanager.update_and_get_positions();
     draw(positions);
-    if (positions) {
-        console.log(` ${positions}`)
-    } 
     document.getElementById("numballs").innerHTML = positions.length / 7;
     // addABall();
     requestAnimationFrame(sim_loop);
@@ -52,13 +49,7 @@ function draw(positions) {
 }
 
 window.add_ballyay = () => {
-    // add_ball: x, y, dx, dy, radius, r, g, b
-    _add_random_balls(50);
-    // ballmanager.add_ball(300, 400, 7, 4, 10);
-    // ballmanager.add_ball(10, 500, 3, 10, 10);
-    // ballmanager.add_ball(300, 400, -8, -2, 10);
-    // ballmanager.add_ball(300, 400, 2, -5, 10);
-    // ballmanager.add_ball(300, 400, -1, 15, 10);
+    _add_random_balls(5);
 }
 
 function _add_random_balls (num) { //x: f32, y: f32, dx: f32, dy: f32, radius: f32, mass: f32, r: f32, g: f32, b: f32
@@ -81,5 +72,16 @@ function generate_intager_based_range(min, max) {
     return rand_int_in_range + min;
 }
 
+document.getElementById("GravityRange").addEventListener("input", (event) => {
+    const value = parseFloat(event.target.value) / 100;
+    console.log(value);
+    ballmanager.set_gravity(value);
+});
+
+document.getElementById("ElasticityRange").addEventListener("input", (event) => {
+    const value = parseFloat(event.target.value) / 100;
+    console.log(value);
+    ballmanager.set_elasticity(value);
+});
 start();
 

@@ -233,11 +233,47 @@ export class BallManager {
     /**
      * @param {Ball} ball1
      * @param {Ball} ball2
+     * @param {number} elasticity
      */
-    static handle_colisons_between_balls_v1(ball1, ball2) {
+    static handle_colisons_between_balls_v1(ball1, ball2, elasticity) {
         _assertClass(ball1, Ball);
         _assertClass(ball2, Ball);
-        wasm.ballmanager_handle_colisons_between_balls_v1(ball1.__wbg_ptr, ball2.__wbg_ptr);
+        wasm.ballmanager_handle_colisons_between_balls_v1(ball1.__wbg_ptr, ball2.__wbg_ptr, elasticity);
+    }
+    /**
+     * @param {Ball} ball1
+     * @param {Ball} ball2
+     */
+    static handle_colisons_between_balls_v2(ball1, ball2) {
+        _assertClass(ball1, Ball);
+        _assertClass(ball2, Ball);
+        wasm.ballmanager_handle_colisons_between_balls_v2(ball1.__wbg_ptr, ball2.__wbg_ptr);
+    }
+    /**
+     * @param {number} g
+     */
+    set_gravity(g) {
+        wasm.ballmanager_set_gravity(this.__wbg_ptr, g);
+    }
+    /**
+     * @returns {number}
+     */
+    get_gravity() {
+        const ret = wasm.ballmanager_get_gravity(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+     * @param {number} e
+     */
+    set_elasticity(e) {
+        wasm.ballmanager_set_elasticity(this.__wbg_ptr, e);
+    }
+    /**
+     * @returns {number}
+     */
+    get_elasticity() {
+        const ret = wasm.ballmanager_get_elasticity(this.__wbg_ptr);
+        return ret;
     }
 }
 

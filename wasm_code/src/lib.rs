@@ -93,11 +93,11 @@ impl BallManager {
             // *** Kollisionslogik ***
             // Kolision mit oben und unten
             if ball.y + ball.radius >= self.canvas_height || ball.y - ball.radius <= 0.0 {
-                ball.dy *= -1.0;
+                ball.dy *= -self.elasticity;
             }
             // Kolision mit Wänden
             if ball.x + ball.radius >= self.canvas_width || ball.x -ball.radius <= 0.0 {
-                ball.dx *= -1.0;
+                ball.dx *= -self.elasticity;
             }
             // Korigierte Positonen bei Feststecken oder Rausfallen
             if ball.x + ball.radius >= self.canvas_width {
@@ -127,7 +127,7 @@ impl BallManager {
                     (&mut left_part[i], &mut right_part[0])
                     // Gibt die mut Referencen zu einem Ball im linken Part und dem ersten im Rechten zurück
                 };
-                Self::handle_colisons_between_balls_v1(ball1, ball2); // Wow
+                Self::handle_colisons_between_balls_v1(ball1, ball2, self.elasticity); // Wow
             }
         }
         for ball in &self.balls {
@@ -145,7 +145,7 @@ impl BallManager {
 
 
 
-    pub fn handle_colisons_between_balls_v1(ball1: &mut Ball, ball2: &mut Ball) {
+    pub fn handle_colisons_between_balls_v1(ball1: &mut Ball, ball2: &mut Ball, elasticity: f32) {
         // Distanz zwischen beiden Bällen Berechnen
         let dx = ball2.x - ball1.x;
         let dy = ball2.y - ball1.y;
@@ -158,10 +158,10 @@ impl BallManager {
         
         if distance_squared < min_distance_squared {
             // *** Kolison *** 
-            ball1.dx *= -1.0;
-            ball1.dy *= -1.0;
-            ball2.dx *= -1.0;
-            ball2.dy *= -1.0;
+            ball1.dx *= -elasticity;
+            ball1.dy *= -elasticity;
+            ball2.dx *= -elasticity;
+            ball2.dy *= -elasticity;
         }
         // Sonderfälle um Überlappungen zu vermeiden
         if distance_squared == 0.0 { // Sonderfall,vermeidet bei uns eigentlich nur Division durch 0
@@ -183,5 +183,25 @@ impl BallManager {
                 ball2.y += overlap * 0.5 * ny;
             }
         }
+    }
+
+    pub fn handle_colisons_between_balls_v2(ball1: &mut Ball, ball2: &mut Ball) {
+
+    }
+
+    // Getters und Setters für Elastizität und Gravitation
+
+    pub fn set_gravity(&mut self, g: f32) {
+        self.gravity = g;
+    }
+    pub fn get_gravity(&self) -> f32 {
+        self.gravity
+    }
+
+    pub fn set_elasticity(&mut self, e: f32) {
+        self.elasticity = e;
+    }
+    pub fn get_elasticity(&self) -> f32 {
+        self.elasticity
     }
 }
