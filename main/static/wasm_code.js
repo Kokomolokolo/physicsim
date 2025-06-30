@@ -18,12 +18,6 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 
-function _assertClass(instance, klass) {
-    if (!(instance instanceof klass)) {
-        throw new Error(`expected instance of ${klass.name}`);
-    }
-}
-
 const BallFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_ball_free(ptr >>> 0, 1));
@@ -224,30 +218,19 @@ export class BallManager {
         return ret >>> 0;
     }
     /**
+     * @param {number} num_x
+     * @param {number} num_y
+     * @param {number} spacing
+     */
+    create_formation(num_x, num_y, spacing) {
+        wasm.ballmanager_create_formation(this.__wbg_ptr, num_x, num_y, spacing);
+    }
+    /**
      * @returns {Float32Array}
      */
     update_and_get_positions() {
         const ret = wasm.ballmanager_update_and_get_positions(this.__wbg_ptr);
         return ret;
-    }
-    /**
-     * @param {Ball} ball1
-     * @param {Ball} ball2
-     * @param {number} elasticity
-     */
-    static handle_colisons_between_balls_v1(ball1, ball2, elasticity) {
-        _assertClass(ball1, Ball);
-        _assertClass(ball2, Ball);
-        wasm.ballmanager_handle_colisons_between_balls_v1(ball1.__wbg_ptr, ball2.__wbg_ptr, elasticity);
-    }
-    /**
-     * @param {Ball} ball1
-     * @param {Ball} ball2
-     */
-    static handle_colisons_between_balls_v2(ball1, ball2) {
-        _assertClass(ball1, Ball);
-        _assertClass(ball2, Ball);
-        wasm.ballmanager_handle_colisons_between_balls_v2(ball1.__wbg_ptr, ball2.__wbg_ptr);
     }
     /**
      * @param {number} g

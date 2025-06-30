@@ -7,20 +7,19 @@
 
 import init, { BallManager } from "./wasm_code.js"
 
-let ballmanager = undefined; // Ballmanager global, ist nicht so schön aber idc
+let manager = undefined; // Ballmanager global, ist nicht so schön aber idc
 
 async function start () {
     await init();
-    ballmanager = BallManager.new(canvas.width, canvas.height);
+    manager = BallManager.new(canvas.width, canvas.height);
     requestAnimationFrame(sim_loop);
 }
 
 function sim_loop () {
     // positions ist ein array: id, x, y, radius
-    let positions = ballmanager.update_and_get_positions();
+    let positions = manager.update_and_get_positions();
     draw(positions);
     document.getElementById("numballs").innerHTML = positions.length / 7;
-    // addABall();
     requestAnimationFrame(sim_loop);
 }
 
@@ -49,7 +48,9 @@ function draw(positions) {
 }
 
 window.add_ballyay = () => {
-    _add_random_balls(5);
+    // _add_random_balls(5);
+    manager.create_formation(100, 2, 10)
+    // &mut self, num_x: i32, num_y: i32, spacing: f32
 }
 
 function _add_random_balls (num) { //x: f32, y: f32, dx: f32, dy: f32, radius: f32, mass: f32, r: f32, g: f32, b: f32
@@ -63,7 +64,7 @@ function _add_random_balls (num) { //x: f32, y: f32, dx: f32, dy: f32, radius: f
         const r = Math.floor(Math.random() * 256);
         const g = Math.floor(Math.random() * 256);
         const b = Math.floor(Math.random() * 256);
-        ballmanager.add_ball(x, y, dx, dy, radius, mass, r, g, b);
+        manager.add_ball(x, y, dx, dy, radius, mass, r, g, b);
     }
 }
 function generate_intager_based_range(min, max) {
@@ -71,17 +72,18 @@ function generate_intager_based_range(min, max) {
     const rand_int_in_range = Math.floor(Math.random() * range)
     return rand_int_in_range + min;
 }
-
 document.getElementById("GravityRange").addEventListener("input", (event) => {
     const value = parseFloat(event.target.value) / 100;
     console.log(value);
-    ballmanager.set_gravity(value);
+    manager.set_gravity(value);
 });
 
 document.getElementById("ElasticityRange").addEventListener("input", (event) => {
     const value = parseFloat(event.target.value) / 100;
     console.log(value);
-    ballmanager.set_elasticity(value);
+    manager.set_elasticity(value);
 });
+
+
 start();
 
