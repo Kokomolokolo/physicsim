@@ -48,8 +48,8 @@ function draw(positions) {
 }
 
 window.add_ballyay = () => {
-    // _add_random_balls(5);
-    manager.create_formation(100, 2, 10)
+    _add_random_balls(5);
+    //manager.create_formation(100, 2, 10)
     // &mut self, num_x: i32, num_y: i32, spacing: f32
 }
 

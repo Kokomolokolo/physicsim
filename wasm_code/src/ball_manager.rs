@@ -2,7 +2,7 @@ use wasm_bindgen::prelude::*;
 use js_sys::Float32Array;
 
 use crate::ball::Ball;
-use crate::physics::collisions::handle_collisons_between_balls_v1;
+use crate::physics::collisions::{ handle_collisons_between_balls_v1, handle_collisons_between_balls_v2 };
 // use crate::physics::sph::compute_sph_forces;
 
 #[wasm_bindgen]
@@ -119,7 +119,7 @@ impl BallManager {
                     (&mut left_part[i], &mut right_part[0])
                     // Gibt die mut Referencen zu einem Ball im linken Part und dem ersten im Rechten zurück
                 };
-                // handle_collisons_between_balls_v1(ball1, ball2, self.elasticity); // Schlecht und irritiernend , bei sph nicht benötigt
+                handle_collisons_between_balls_v2(ball1, ball2, self.elasticity); // Schlecht und irritiernend , bei sph nicht benötigt
             }
         }
         for ball in &self.balls {
